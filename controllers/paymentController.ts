@@ -9,7 +9,6 @@ import { processPaymentSchema } from "../zodSchemas/paymentShema.js";
 export const paymentController = {
   async processPayment(req: AuthenticatedRequest, res: Response) {
     try {
-      // Step 1: Extract and validate Idempotency-Key header (required for mutating endpoint)
       const idempotencyKey = req.headers["idempotency-key"] as
         | string
         | undefined;
@@ -25,16 +24,17 @@ export const paymentController = {
         });
       }
 
-      // Step 2: Validate request body using Zod (consistent with your authController)
       const validatedData = processPaymentSchema.parse(req.body);
 
-      // Step 3: Call service (all business logic lives here - clean separation)
       const result = await paymentService.processPayment(
         idempotencyKey,
         validatedData,
       );
 
-      // Step 4: Return exact response with proper status (201 Created for new resource)
+      if (result.cacheHit) {
+        res.set("X-Cache-Hit", "true");
+      }
+
       return res.status(result.statusCode).json(result.body);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -51,7 +51,7 @@ export const paymentController = {
       console.error("Error in processPayment:", error);
       return res.status(500).json({
         success: false,
-        message: "Internal server error", // Secure message - never leak details
+        message: "Internal server error",
       });
     }
   },

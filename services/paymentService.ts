@@ -9,8 +9,7 @@ import {
 import { ProcessPaymentRequest } from "../zodSchemas/paymentShema.js";
 import { persistence } from "../utils/persistence.js";
 
-const payments = new Map<string, IdempotencyRecord>(); 
-
+const payments = new Map<string, IdempotencyRecord>();
 
 function createRequestHash(body: ProcessPaymentRequest): string {
   return randomBytes(32).toString("hex");
@@ -37,12 +36,22 @@ export const paymentService = {
   async processPayment(
     idempotencyKey: string,
     body: ProcessPaymentRequest,
-  ): Promise<{ statusCode: number; body: PaymentSuccessResponse }> {
+  ): Promise<{
+    statusCode: number;
+    body: PaymentSuccessResponse;
+    cacheHit: boolean;
+  }> {
     const key = idempotencyKey.trim();
 
     const existing = payments.get(key);
     if (existing) {
-      return { statusCode: existing.statusCode, body: existing.body };
+      console.log(`♻️  Cache hit for idempotency key: ${key}`);
+
+      return {
+        statusCode: existing.statusCode,
+        body: existing.body as PaymentSuccessResponse,
+        cacheHit: true,
+      };
     }
 
     console.log(
@@ -80,6 +89,6 @@ export const paymentService = {
 
     await persistence.savePayments(storedPayments);
 
-    return { statusCode: 201, body: responseBody };
+    return { statusCode: 201, body: responseBody, cacheHit: false };
   },
 };
