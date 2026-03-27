@@ -1,0 +1,15 @@
+[
+  {
+    "idempotencyKey": "test-key-1",
+    "requestHash": "901a748b8c3c21f94d880866cc0a016ab12c6ba7e70d537e6a1a20e802675e94",
+    "statusCode": 201,
+    "body": {
+      "success": true,
+      "message": "Charged 100 GHS",
+      "transactionId": "txn_1156926c0db742a12",
+      "amount": 100,
+      "currency": "GHS"
+    },
+    "timestamp": "2026-03-27T14:13:27.199Z"
+  }
+]

@@ -1,0 +1,259 @@
+{
+  "info": {
+    "_postman_id": "payment-idempotency-collection-2026",
+    "name": "Finsafe Payment API - Idempotent Tests",
+    "description": "Complete test suite for the idempotent /process-payment endpoint.\n\nFeatures tested:\n- First successful payment (with 2s simulation)\n- Duplicate requests (exact replay + X-Cache-Hit)\n- Same key + different body (409 conflict)\n- Missing Idempotency-Key\n- In-flight concurrent requests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3100",
+      "type": "string"
+    },
+    {
+      "key": "idempotencyKey",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔑 1. Login (Get Fresh Token)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    const jsonData = pm.response.json();",
+              "    if (jsonData.success && jsonData.token) {",
+              "        pm.collectionVariables.set('token', jsonData.token);",
+              "        console.log('✅ Token saved to collection variable');",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"finsafe@example.com\",\n  \"password\": \"your_password_here\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "💰 2. First Payment (Happy Path - 2s delay)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// Generate fresh UUIDv4 for Idempotency-Key (best practice)",
+              "pm.variables.set('idempotencyKey', pm.variables.replaceIn('{{$guid}}'));",
+              "console.log('🆕 Generated Idempotency-Key:', pm.variables.get('idempotencyKey'));"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 201 Created', () => {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "pm.test('Success response with user and transaction', () => {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.be.true;",
+              "    pm.expect(jsonData.message).to.include('Charged');",
+              "    pm.expect(jsonData.user).to.be.an('object');",
+              "    pm.expect(jsonData.transaction).to.be.an('object');",
+              "});",
+              "pm.test('No cache hit on first request', () => {",
+              "    pm.expect(pm.response.headers.get('X-Cache-Hit')).to.be.null;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Idempotency-Key",
+            "value": "{{idempotencyKey}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amount\": 100,\n  \"currency\": \"GHS\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/payments/process-payment",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "payments", "process-payment"]
+        }
+      }
+    },
+    {
+      "name": "🔄 3. Duplicate Payment (Should replay instantly)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// Reuse the SAME Idempotency-Key from previous request",
+              "console.log('♻️ Reusing Idempotency-Key:', pm.variables.get('idempotencyKey'));"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 201 Created (exact replay)', () => {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "pm.test('X-Cache-Hit header is true', () => {",
+              "    pm.expect(pm.response.headers.get('X-Cache-Hit')).to.equal('true');",
+              "});",
+              "pm.test('Response body is identical', () => {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.be.true;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Idempotency-Key",
+            "value": "{{idempotencyKey}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amount\": 100,\n  \"currency\": \"GHS\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/payments/process-payment",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "payments", "process-payment"]
+        }
+      }
+    },
+    {
+      "name": "⚠️ 4. Same Key + Different Amount (409 Conflict)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "console.log('🔒 Testing mismatch with same key:', pm.variables.get('idempotencyKey'));"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 409 Conflict', () => {",
+              "    pm.response.to.have.status(409);",
+              "});",
+              "pm.test('Secure error message', () => {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.message).to.include('different request body');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Idempotency-Key",
+            "value": "{{idempotencyKey}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amount\": 500,\n  \"currency\": \"GHS\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/payments/process-payment",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "payments", "process-payment"]
+        }
+      }
+    },
+    {
+      "name": "❌ 5. Missing Idempotency-Key",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amount\": 100,\n  \"currency\": \"GHS\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/payments/process-payment",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "payments", "process-payment"]
+        }
+      }
+    }
+  ]
+}

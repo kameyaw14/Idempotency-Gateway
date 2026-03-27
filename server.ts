@@ -3,8 +3,14 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import http from "http";
-import { checkRequiredEnv } from "./config/checkEnv";
-import { env } from "./utils/env";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import { checkRequiredEnv } from "./config/checkEnv.js";
+import { env } from "./utils/env.js";
+import authRouter from "./routes/authRoutes.js";
+import { authService } from "./services/authService.js";
+import paymentRouter from "./routes/paymentRoutes.js";
+import { paymentService } from "./services/paymentService.js";
 
 checkRequiredEnv();
 
@@ -29,16 +35,28 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
-// init http server
-const httpServer = http.createServer(app);
+app.use(helmet());
 
-//cron jobs
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
+  message: {
+    success: false,
+    message: "Too many requests, please try again later.",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use(globalLimiter);
+
+const httpServer = http.createServer(app);
 
 app.use(cors(corsOptions));
 
 app.use(express.json());
 
-// app.use("/api/auth", authRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/payments", paymentRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -60,6 +78,15 @@ app.use((req, res) => {
 // Error handling middleware
 app.use((err: any, req: any, res: any, next: any) => {
   console.error(err.stack);
+
+  // Handle rate limit errors
+  if (err.statusCode === 429) {
+    return res.status(429).json({
+      success: false,
+      message: "Too many requests. Please try again later.",
+    });
+  }
+
   if (err.message.includes("CORS")) {
     return res.status(403).json({
       success: false,
@@ -84,6 +111,8 @@ const startServer = async () => {
       console.log(`Server is running on http://localhost:${PORT}`);
       console.log(`Allowed client URL: ${env.CLIENT_URL}`);
     });
+    await authService.init();
+    await paymentService.init();
   } catch (error) {
     console.error("❌Failed to start server", error);
     process.exit(1);
