@@ -11,5 +11,31 @@
       "currency": "GHS"
     },
     "timestamp": "2026-03-27T14:13:27.199Z"
+  },
+  {
+    "idempotencyKey": "test-key-2",
+    "requestHash": "f317792fef7c97b25e30c45253141c13504bf7c82d283ce398817d6812595334",
+    "statusCode": 201,
+    "body": {
+      "success": true,
+      "message": "Charged 50 GHS",
+      "transactionId": "txn_1167ad3f333d8df73",
+      "amount": 50,
+      "currency": "GHS"
+    },
+    "timestamp": "2026-03-27T14:28:12.716Z"
+  },
+  {
+    "idempotencyKey": "test-key-3",
+    "requestHash": "b5596122911b7b0d67cf23538ac2e0c5bafd34fd4d5fbfe314a844ae614aa856",
+    "statusCode": 201,
+    "body": {
+      "success": true,
+      "message": "Charged 50 GHS",
+      "transactionId": "txn_17bd4e3a6793fa0a0",
+      "amount": 50,
+      "currency": "GHS"
+    },
+    "timestamp": "2026-03-27T14:29:24.044Z"
   }
 ]
