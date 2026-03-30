@@ -30,23 +30,24 @@ export const idempotencyMiddleware = async (
     const result = await paymentService.checkIdempotency(
       idempotencyKey,
       requestHash,
+      req.body,
     );
 
     if (result.cached) {
-      // Exact replay - this builds developer trust
       res.set("X-Cache-Hit", "true");
-      return res.status(result.status).json(result.body);
+      return res.status(result.status!).json(result.body);
     }
 
     if (result.conflict) {
+      console.warn(
+        `⚠️  Idempotency conflict detected for key: ${idempotencyKey}`,
+      );
       return res.status(409).json({
         success: false,
         message: "Idempotency key already used for a different request body.",
       });
     }
 
-    // In-flight case: the service already attached the promise to wait on
-    // We just continue to controller (controller will resolve it)
     (req as any).idempotencyKey = idempotencyKey;
     (req as any).requestHash = requestHash;
 

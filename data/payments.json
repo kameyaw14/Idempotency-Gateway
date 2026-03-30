@@ -1,41 +1,36 @@
 [
   {
-    "idempotencyKey": "test-key-1",
-    "requestHash": "901a748b8c3c21f94d880866cc0a016ab12c6ba7e70d537e6a1a20e802675e94",
+    "idempotencyKey": "test-key-2",
+    "requestHash": "d951413a8ecda3bdf718c0b7834d61dd542fdaa108d8cf488166d7e29da675f7",
     "statusCode": 201,
     "body": {
       "success": true,
       "message": "Charged 100 GHS",
-      "transactionId": "txn_1156926c0db742a12",
+      "transactionId": "txn_16922e8dc1354f327",
       "amount": 100,
       "currency": "GHS"
     },
-    "timestamp": "2026-03-27T14:13:27.199Z"
+    "originalBody": {
+      "amount": 100,
+      "currency": "GHS"
+    },
+    "timestamp": "2026-03-30T14:33:50.768Z"
   },
   {
-    "idempotencyKey": "test-key-2",
-    "requestHash": "f317792fef7c97b25e30c45253141c13504bf7c82d283ce398817d6812595334",
+    "idempotencyKey": "test-key-1",
+    "requestHash": "d951413a8ecda3bdf718c0b7834d61dd542fdaa108d8cf488166d7e29da675f7",
     "statusCode": 201,
     "body": {
       "success": true,
-      "message": "Charged 50 GHS",
-      "transactionId": "txn_1167ad3f333d8df73",
-      "amount": 50,
+      "message": "Charged 100 GHS",
+      "transactionId": "txn_1fdf9b28e29593b75",
+      "amount": 100,
       "currency": "GHS"
     },
-    "timestamp": "2026-03-27T14:28:12.716Z"
-  },
-  {
-    "idempotencyKey": "test-key-3",
-    "requestHash": "b5596122911b7b0d67cf23538ac2e0c5bafd34fd4d5fbfe314a844ae614aa856",
-    "statusCode": 201,
-    "body": {
-      "success": true,
-      "message": "Charged 50 GHS",
-      "transactionId": "txn_17bd4e3a6793fa0a0",
-      "amount": 50,
+    "originalBody": {
+      "amount": 100,
       "currency": "GHS"
     },
-    "timestamp": "2026-03-27T14:29:24.044Z"
+    "timestamp": "2026-03-30T14:35:29.613Z"
   }
 ]

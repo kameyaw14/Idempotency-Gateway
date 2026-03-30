@@ -1,10 +1,11 @@
 // services/paymentService.ts
-import { randomBytes } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 
 import {
   PaymentSuccessResponse,
   IdempotencyRecord,
   StoredPayment,
+  IdempotencyCheckResult,
 } from "../types/types.js";
 import { ProcessPaymentRequest } from "../zodSchemas/paymentShema.js";
 import { persistence } from "../utils/persistence.js";
@@ -12,7 +13,8 @@ import { persistence } from "../utils/persistence.js";
 const payments = new Map<string, IdempotencyRecord>();
 
 function createRequestHash(body: ProcessPaymentRequest): string {
-  return randomBytes(32).toString("hex");
+  const bodyStr = JSON.stringify(body);
+  return createHash("sha256").update(bodyStr).digest("hex");
 }
 
 export const paymentService = {
@@ -26,11 +28,39 @@ export const paymentService = {
         statusCode: item.statusCode,
         body: item.body,
         requestHash: item.requestHash,
+        originalBody: item.originalBody,
         timestamp: new Date(item.timestamp),
       });
     });
 
     console.log(`✅ Loaded ${payments.size} payment records from disk`);
+  },
+
+  async checkIdempotency(
+    idempotencyKey: string,
+    requestHash: string,
+    originalBody: any,
+  ): Promise<IdempotencyCheckResult> {
+    const key = idempotencyKey.trim();
+    const existing = payments.get(key);
+
+    if (existing) {
+      if (existing.requestHash === requestHash) {
+        console.log(`♻️  Cache hit for idempotency key: ${key}`);
+        return {
+          cached: true,
+          conflict: false,
+          status: existing.statusCode,
+          body: existing.body,
+        };
+      } else {
+        // User Story 3: Same key but different body → conflict!
+        console.warn(`⚠️  Idempotency conflict detected for key: ${key}`);
+        return { cached: false, conflict: true };
+      }
+    }
+
+    return { cached: false, conflict: false };
   },
 
   async processPayment(
@@ -45,6 +75,10 @@ export const paymentService = {
 
     const existing = payments.get(key);
     if (existing) {
+      if (existing.requestHash !== createRequestHash(body)) {
+       
+        throw new Error("Idempotency conflict detected in processPayment");
+      }
       console.log(`♻️  Cache hit for idempotency key: ${key}`);
 
       return {
@@ -74,6 +108,7 @@ export const paymentService = {
       statusCode: 201,
       body: responseBody,
       requestHash: createRequestHash(body),
+      originalBody: body,
       timestamp: new Date(),
     };
 
@@ -84,6 +119,7 @@ export const paymentService = {
       requestHash: v.requestHash,
       statusCode: v.statusCode,
       body: v.body,
+      originalBody: v.originalBody,
       timestamp: v.timestamp.toISOString(),
     }));
 

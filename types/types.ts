@@ -48,7 +48,15 @@ export interface StoredPayment {
   requestHash: string;
   statusCode: number;
   body: any;
+  originalBody: any;
   timestamp: string;
+}
+
+export interface IdempotencyCheckResult {
+  cached: boolean; 
+  conflict: boolean; 
+  status?: number;
+  body?: any;
 }
 
 export interface ProcessPaymentRequestBody {
@@ -68,5 +76,6 @@ export interface IdempotencyRecord {
   statusCode: number;
   body: any;
   requestHash: string;
+  originalBody: any;
   timestamp: Date;
 }
