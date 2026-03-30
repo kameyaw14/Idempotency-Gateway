@@ -48,6 +48,12 @@ export const idempotencyMiddleware = async (
       });
     }
 
+    if (result.inFlight && result.promise) {
+      (req as any).idempotencyPromise = result.promise;
+      next();
+      return;
+    }
+
     (req as any).idempotencyKey = idempotencyKey;
     (req as any).requestHash = requestHash;
 

@@ -53,8 +53,10 @@ export interface StoredPayment {
 }
 
 export interface IdempotencyCheckResult {
-  cached: boolean; 
-  conflict: boolean; 
+  cached: boolean;
+  conflict: boolean;
+  inFlight?: boolean;
+  promise?: Promise<any>;
   status?: number;
   body?: any;
 }

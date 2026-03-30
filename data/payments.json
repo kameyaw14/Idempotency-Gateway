@@ -1,36 +1,19 @@
 [
   {
-    "idempotencyKey": "test-key-2",
-    "requestHash": "d951413a8ecda3bdf718c0b7834d61dd542fdaa108d8cf488166d7e29da675f7",
-    "statusCode": 201,
-    "body": {
-      "success": true,
-      "message": "Charged 100 GHS",
-      "transactionId": "txn_16922e8dc1354f327",
-      "amount": 100,
-      "currency": "GHS"
-    },
-    "originalBody": {
-      "amount": 100,
-      "currency": "GHS"
-    },
-    "timestamp": "2026-03-30T14:33:50.768Z"
-  },
-  {
     "idempotencyKey": "test-key-1",
-    "requestHash": "d951413a8ecda3bdf718c0b7834d61dd542fdaa108d8cf488166d7e29da675f7",
+    "requestHash": "b935cba272c845858cddb421f96b250badd84a1aa3a2e15bcc5a1182d08447e0",
     "statusCode": 201,
     "body": {
       "success": true,
-      "message": "Charged 100 GHS",
-      "transactionId": "txn_1fdf9b28e29593b75",
-      "amount": 100,
+      "message": "Charged 50 GHS",
+      "transactionId": "txn_123f75fa3210044a4",
+      "amount": 50,
       "currency": "GHS"
     },
     "originalBody": {
-      "amount": 100,
+      "amount": 50,
       "currency": "GHS"
     },
-    "timestamp": "2026-03-30T14:35:29.613Z"
+    "timestamp": "2026-03-30T19:05:38.453Z"
   }
 ]

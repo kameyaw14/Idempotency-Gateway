@@ -12,6 +12,8 @@ import { persistence } from "../utils/persistence.js";
 
 const payments = new Map<string, IdempotencyRecord>();
 
+const inFlight = new Map<string, Promise<any>>();
+
 function createRequestHash(body: ProcessPaymentRequest): string {
   const bodyStr = JSON.stringify(body);
   return createHash("sha256").update(bodyStr).digest("hex");
@@ -60,6 +62,17 @@ export const paymentService = {
       }
     }
 
+    const pendingPromise = inFlight.get(key);
+    if (pendingPromise) {
+      console.log(`⏳ In-flight request waiting for key: ${key}`);
+      return {
+        cached: false,
+        conflict: false,
+        inFlight: true,
+        promise: pendingPromise,
+      };
+    }
+
     return { cached: false, conflict: false };
   },
 
@@ -68,7 +81,7 @@ export const paymentService = {
     body: ProcessPaymentRequest,
   ): Promise<{
     statusCode: number;
-    body: PaymentSuccessResponse;
+    body: PaymentSuccessResponse | any;
     cacheHit: boolean;
   }> {
     const key = idempotencyKey.trim();
@@ -76,7 +89,6 @@ export const paymentService = {
     const existing = payments.get(key);
     if (existing) {
       if (existing.requestHash !== createRequestHash(body)) {
-       
         throw new Error("Idempotency conflict detected in processPayment");
       }
       console.log(`♻️  Cache hit for idempotency key: ${key}`);
@@ -88,43 +100,52 @@ export const paymentService = {
       };
     }
 
-    console.log(
-      `🔄 Processing new payment for key: ${key} (amount: ${body.amount} ${body.currency})`,
-    );
+    const processingPromise = (async () => {
+      console.log(
+        `🔄 Processing new payment for key: ${key} (amount: ${body.amount} ${body.currency})`,
+      );
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 10000));
 
-    const transactionId = `txn_1${randomBytes(8).toString("hex")}`;
+      const transactionId = `txn_1${randomBytes(8).toString("hex")}`;
 
-    const responseBody: PaymentSuccessResponse = {
-      success: true,
-      message: `Charged ${body.amount} ${body.currency}`,
-      transactionId,
-      amount: body.amount,
-      currency: body.currency,
-    };
+      const responseBody: PaymentSuccessResponse = {
+        success: true,
+        message: `Charged ${body.amount} ${body.currency}`,
+        transactionId,
+        amount: body.amount,
+        currency: body.currency,
+      };
 
-    const record: IdempotencyRecord = {
-      statusCode: 201,
-      body: responseBody,
-      requestHash: createRequestHash(body),
-      originalBody: body,
-      timestamp: new Date(),
-    };
+      const record: IdempotencyRecord = {
+        statusCode: 201,
+        body: responseBody,
+        requestHash: createRequestHash(body),
+        originalBody: body,
+        timestamp: new Date(),
+      };
 
-    payments.set(key, record);
+      payments.set(key, record);
 
-    const storedPayments = Array.from(payments.entries()).map(([k, v]) => ({
-      idempotencyKey: k,
-      requestHash: v.requestHash,
-      statusCode: v.statusCode,
-      body: v.body,
-      originalBody: v.originalBody,
-      timestamp: v.timestamp.toISOString(),
-    }));
+      const storedPayments = Array.from(payments.entries()).map(([k, v]) => ({
+        idempotencyKey: k,
+        requestHash: v.requestHash,
+        statusCode: v.statusCode,
+        body: v.body,
+        originalBody: v.originalBody,
+        timestamp: v.timestamp.toISOString(),
+      }));
 
-    await persistence.savePayments(storedPayments);
+      await persistence.savePayments(storedPayments);
 
-    return { statusCode: 201, body: responseBody, cacheHit: false };
+      //  Clean up in-flight map once done
+      inFlight.delete(key);
+
+      return { statusCode: 201, body: responseBody, cacheHit: false };
+    })();
+
+    inFlight.set(key, processingPromise);
+
+    return processingPromise;
   },
 };

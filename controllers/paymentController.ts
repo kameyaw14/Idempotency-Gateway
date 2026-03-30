@@ -26,10 +26,18 @@ export const paymentController = {
 
       const validatedData = processPaymentSchema.parse(req.body);
 
-      const result = await paymentService.processPayment(
-        idempotencyKey,
-        validatedData,
-      );
+      const idempotencyPromise = (req as any).idempotencyPromise;
+      let result;
+
+      if (idempotencyPromise) {
+        result = await idempotencyPromise;
+        res.set("X-Processing", "true"); // Only on waited responses (as recommended)
+      } else {
+        result = await paymentService.processPayment(
+          idempotencyKey,
+          validatedData,
+        );
+      }
 
       if (result.cacheHit) {
         res.set("X-Cache-Hit", "true");
