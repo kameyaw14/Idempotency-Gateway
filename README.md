@@ -289,21 +289,8 @@ Audits can be accessed either by the api endpoint or in the data/audits.json fil
 
 ---
 
-## Pre-Submission Checklist (All Passed ✅)
-
-- Public repository
-- Clean code (no unnecessary files or secrets)
-- Server starts with `npm run dev`
-- Both architecture diagrams included
-- Detailed API documentation for all endpoints
-- Postman collection link
-- Developer's Choice fully implemented and documented
-- Secure practices applied throughout
-
 Built with care to prevent double-charging and deliver peace of mind in every transaction.
 
 **Nana Ameyaw** – Full Stack Developer  
 March 2026
 ```
-
-**Perfect!**  
