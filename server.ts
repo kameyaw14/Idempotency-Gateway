@@ -11,6 +11,8 @@ import authRouter from "./routes/authRoutes.js";
 import { authService } from "./services/authService.js";
 import paymentRouter from "./routes/paymentRoutes.js";
 import { paymentService } from "./services/paymentService.js";
+import { requestIdMiddleware } from "./middleware/requestId.js";
+import { persistence } from "./utils/persistence.js";
 
 checkRequiredEnv();
 
@@ -35,6 +37,7 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
+app.use(requestIdMiddleware);
 app.use(helmet());
 
 const globalLimiter = rateLimit({
@@ -113,6 +116,8 @@ const startServer = async () => {
     });
     await authService.init();
     await paymentService.init();
+    await persistence.ensureDataDir();
+    console.log("✅ Audit logging system initialized (data/audit.json ready)");
   } catch (error) {
     console.error("❌Failed to start server", error);
     process.exit(1);

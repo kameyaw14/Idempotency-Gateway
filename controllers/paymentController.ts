@@ -36,6 +36,8 @@ export const paymentController = {
         result = await paymentService.processPayment(
           idempotencyKey,
           validatedData,
+          req.requestId!,
+          req.user?.id || null,
         );
       }
 

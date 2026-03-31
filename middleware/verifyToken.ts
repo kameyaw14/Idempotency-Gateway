@@ -6,7 +6,13 @@ import { authService } from "../services/authService.js";
 const JWT_SECRET = env.JWT_SECRET!;
 
 export interface AuthenticatedRequest extends Request {
-  user?: { id: string; email: string; createdAt: any; name: any };
+  user?: {
+    id: string;
+    email: string;
+    createdAt: any;
+    name: any;
+  };
+  requestId: string;
 }
 
 export const authMiddleware = (

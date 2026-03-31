@@ -9,6 +9,7 @@ import {
 } from "../types/types.js";
 import { ProcessPaymentRequest } from "../zodSchemas/paymentShema.js";
 import { persistence } from "../utils/persistence.js";
+import { logAudit } from "../utils/auditLogger.js";
 
 const payments = new Map<string, IdempotencyRecord>();
 
@@ -79,6 +80,8 @@ export const paymentService = {
   async processPayment(
     idempotencyKey: string,
     body: ProcessPaymentRequest,
+    requestId: string,
+    userId: string | null,
   ): Promise<{
     statusCode: number;
     body: PaymentSuccessResponse | any;
@@ -93,6 +96,16 @@ export const paymentService = {
       }
       console.log(`♻️  Cache hit for idempotency key: ${key}`);
 
+      await logAudit({
+        requestId,
+        userId,
+        eventType: "CACHE_HIT",
+        idempotencyKey: key,
+        requestHash: existing.requestHash,
+        outcome: "cached",
+        details: { message: "Cache hit in processPayment" },
+      });
+
       return {
         statusCode: existing.statusCode,
         body: existing.body as PaymentSuccessResponse,
@@ -105,7 +118,7 @@ export const paymentService = {
         `🔄 Processing new payment for key: ${key} (amount: ${body.amount} ${body.currency})`,
       );
 
-      await new Promise((resolve) => setTimeout(resolve, 10000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const transactionId = `txn_1${randomBytes(8).toString("hex")}`;
 
@@ -140,6 +153,21 @@ export const paymentService = {
 
       //  Clean up in-flight map once done
       inFlight.delete(key);
+
+      await logAudit({
+        requestId,
+        userId,
+        eventType: "PAYMENT_SUCCESS",
+        idempotencyKey: key,
+        requestHash: record.requestHash,
+        outcome: "success",
+        details: {
+          amount: body.amount,
+          currency: body.currency,
+          transactionId,
+          processingTimeMs: 2000,
+        },
+      });
 
       return { statusCode: 201, body: responseBody, cacheHit: false };
     })();

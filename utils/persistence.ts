@@ -1,11 +1,16 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
-import { SerializedUsers, StoredPayment } from "../types/types.js";
+import {
+  AuditLogEntry,
+  SerializedUsers,
+  StoredPayment,
+} from "../types/types.js";
 
 const DATA_DIR = join(process.cwd(), "data");
 
 const USERS_FILE = join(DATA_DIR, "users.json");
 const PAYMENTS_FILE = join(DATA_DIR, "payments.json");
+const AUDIT_FILE = join(DATA_DIR, "audit.json");
 
 export const persistence = {
   async ensureDataDir() {
@@ -57,6 +62,27 @@ export const persistence = {
       console.log(`✅ Payments saved to disk (${payments.length} records)`);
     } catch (err) {
       console.error("Failed to save payments to disk:", err);
+    }
+  },
+
+  async loadAudits(): Promise<AuditLogEntry[]> {
+    try {
+      const data = await readFile(AUDIT_FILE, "utf8");
+      return JSON.parse(data) as AuditLogEntry[];
+    } catch (err: any) {
+      if (err.code === "ENOENT") {
+        return [];
+      }
+      console.error("Failed to load audits from disk:", err);
+      return [];
+    }
+  },
+
+  async saveAudits(audits: AuditLogEntry[]): Promise<void> {
+    try {
+      await writeFile(AUDIT_FILE, JSON.stringify(audits, null, 2), "utf8");
+    } catch (err) {
+      console.error("Failed to save audits to disk:", err);
     }
   },
 };

@@ -1,0 +1,304 @@
+[
+  {
+    "id": "audit_1774958536878_a89ea6a3",
+    "timestamp": "2026-03-31T12:02:16.878Z",
+    "requestId": "98408bb8-7664-4129-ae34-4d90cc2d41d9",
+    "userId": "user_1774558178068_snvxqudjhum",
+    "eventType": "IDEMPOTENCY_CHECK",
+    "idempotencyKey": "test-key-1",
+    "requestHash": "b935cba272c845858cddb421f96b250badd84a1aa3a2e15bcc5a1182d08447e0",
+    "outcome": "success",
+    "details": {
+      "action": "starting_idempotency_check"
+    }
+  },
+  {
+    "id": "audit_1774958536887_84cbf56d",
+    "timestamp": "2026-03-31T12:02:16.887Z",
+    "requestId": "98408bb8-7664-4129-ae34-4d90cc2d41d9",
+    "userId": "user_1774558178068_snvxqudjhum",
+    "eventType": "PAYMENT_PROCESSING_STARTED",
+    "idempotencyKey": "test-key-1",
+    "requestHash": "b935cba272c845858cddb421f96b250badd84a1aa3a2e15bcc5a1182d08447e0",
+    "outcome": "success",
+    "details": {
+      "amount": 50,
+      "currency": "GHS"
+    }
+  },
+  {
+    "id": "audit_1774958546946_f55d23b3",
+    "timestamp": "2026-03-31T12:02:26.946Z",
+    "requestId": "98408bb8-7664-4129-ae34-4d90cc2d41d9",
+    "userId": "user_1774558178068_snvxqudjhum",
+    "eventType": "PAYMENT_SUCCESS",
+    "idempotencyKey": "test-key-1",
+    "requestHash": "b935cba272c845858cddb421f96b250badd84a1aa3a2e15bcc5a1182d08447e0",
+    "outcome": "success",
+    "details": {
+      "amount": 50,
+      "currency": "GHS",
+      "transactionId": "txn_17b2e4aec88c4a877",
+      "processingTimeMs": 10000
+    }
+  },
+  {
+    "id": "audit_1774958619857_4303e72e",
+    "timestamp": "2026-03-31T12:03:39.857Z",
+    "requestId": "f456413b-48ba-4d48-aa02-6dc59bbd6fcf",
+    "userId": "user_1774558178068_snvxqudjhum",
+    "eventType": "IDEMPOTENCY_CHECK",
+    "idempotencyKey": "test-key-1",
+    "requestHash": "b935cba272c845858cddb421f96b250badd84a1aa3a2e15bcc5a1182d08447e0",
+    "outcome": "success",
+    "details": {
+      "action": "starting_idempotency_check"
+    }
+  },
+  {
+    "id": "audit_1774958619865_140d548e",
+    "timestamp": "2026-03-31T12:03:39.865Z",
+    "requestId": "f456413b-48ba-4d48-aa02-6dc59bbd6fcf",
+    "userId": "user_1774558178068_snvxqudjhum",
+    "eventType": "CACHE_HIT",
+    "idempotencyKey": "test-key-1",
+    "requestHash": "b935cba272c845858cddb421f96b250badd84a1aa3a2e15bcc5a1182d08447e0",
+    "outcome": "cached",
+    "details": {
+      "message": "Returning cached response"
+    }
+  },
+  {
+    "id": "audit_1774958646080_6ae8fac5",
+    "timestamp": "2026-03-31T12:04:06.080Z",
+    "requestId": "df205dd3-a599-47e2-9995-affb724258b3",
+    "userId": "user_1774558178068_snvxqudjhum",
+    "eventType": "IDEMPOTENCY_CHECK",
+    "idempotencyKey": "test-key-1",
+    "requestHash": "35dfeda66d126dccdb67ec7e1c539218fd6af4d420de9d39d3c3caf6c01b5224",
+    "outcome": "success",
+    "details": {
+      "action": "starting_idempotency_check"
+    }
+  },
+  {
+    "id": "audit_1774958646088_1a8a3e41",
+    "timestamp": "2026-03-31T12:04:06.089Z",
+    "requestId": "df205dd3-a599-47e2-9995-affb724258b3",
+    "userId": "user_1774558178068_snvxqudjhum",
+    "eventType": "CONFLICT_REJECTED",
+    "idempotencyKey": "test-key-1",
+    "requestHash": "35dfeda66d126dccdb67ec7e1c539218fd6af4d420de9d39d3c3caf6c01b5224",
+    "outcome": "conflict",
+    "details": {
+      "message": "Different request body for same key"
+    }
+  },
+  {
+    "id": "audit_1774959204958_3f09fdfa",
+    "timestamp": "2026-03-31T12:13:24.958Z",
+    "requestId": "beabc8e8-b6b2-4735-a46c-3e8eff2bec50",
+    "userId": "user_1774959056846_xsnegs4obzl",
+    "eventType": "IDEMPOTENCY_CHECK",
+    "idempotencyKey": "test-key-1",
+    "requestHash": "35dfeda66d126dccdb67ec7e1c539218fd6af4d420de9d39d3c3caf6c01b5224",
+    "outcome": "success",
+    "details": {
+      "action": "starting_idempotency_check"
+    }
+  },
+  {
+    "id": "audit_1774959204967_1aa3daba",
+    "timestamp": "2026-03-31T12:13:24.967Z",
+    "requestId": "beabc8e8-b6b2-4735-a46c-3e8eff2bec50",
+    "userId": "user_1774959056846_xsnegs4obzl",
+    "eventType": "CONFLICT_REJECTED",
+    "idempotencyKey": "test-key-1",
+    "requestHash": "35dfeda66d126dccdb67ec7e1c539218fd6af4d420de9d39d3c3caf6c01b5224",
+    "outcome": "conflict",
+    "details": {
+      "message": "Different request body for same key"
+    }
+  },
+  {
+    "id": "audit_1774959225551_dda4f165",
+    "timestamp": "2026-03-31T12:13:45.551Z",
+    "requestId": "00dc0bc6-fa51-47b2-bbaa-6fb7f91291c3",
+    "userId": "user_1774959056846_xsnegs4obzl",
+    "eventType": "IDEMPOTENCY_CHECK",
+    "idempotencyKey": "test2-key-1",
+    "requestHash": "35dfeda66d126dccdb67ec7e1c539218fd6af4d420de9d39d3c3caf6c01b5224",
+    "outcome": "success",
+    "details": {
+      "action": "starting_idempotency_check"
+    }
+  },
+  {
+    "id": "audit_1774959225560_4676f5a9",
+    "timestamp": "2026-03-31T12:13:45.560Z",
+    "requestId": "00dc0bc6-fa51-47b2-bbaa-6fb7f91291c3",
+    "userId": "user_1774959056846_xsnegs4obzl",
+    "eventType": "PAYMENT_PROCESSING_STARTED",
+    "idempotencyKey": "test2-key-1",
+    "requestHash": "35dfeda66d126dccdb67ec7e1c539218fd6af4d420de9d39d3c3caf6c01b5224",
+    "outcome": "success",
+    "details": {
+      "amount": 500,
+      "currency": "GHS"
+    }
+  },
+  {
+    "id": "audit_1774959235623_38af56ed",
+    "timestamp": "2026-03-31T12:13:55.623Z",
+    "requestId": "00dc0bc6-fa51-47b2-bbaa-6fb7f91291c3",
+    "userId": "user_1774959056846_xsnegs4obzl",
+    "eventType": "PAYMENT_SUCCESS",
+    "idempotencyKey": "test2-key-1",
+    "requestHash": "35dfeda66d126dccdb67ec7e1c539218fd6af4d420de9d39d3c3caf6c01b5224",
+    "outcome": "success",
+    "details": {
+      "amount": 500,
+      "currency": "GHS",
+      "transactionId": "txn_11082cbaeaf13adbf",
+      "processingTimeMs": 2000
+    }
+  },
+  {
+    "id": "audit_1774959241199_f795f3f0",
+    "timestamp": "2026-03-31T12:14:01.199Z",
+    "requestId": "d05273d3-3cd4-440f-86ff-ba9e60328bb4",
+    "userId": "user_1774959056846_xsnegs4obzl",
+    "eventType": "IDEMPOTENCY_CHECK",
+    "idempotencyKey": "test2-key-1",
+    "requestHash": "35dfeda66d126dccdb67ec7e1c539218fd6af4d420de9d39d3c3caf6c01b5224",
+    "outcome": "success",
+    "details": {
+      "action": "starting_idempotency_check"
+    }
+  },
+  {
+    "id": "audit_1774959241253_17abf85d",
+    "timestamp": "2026-03-31T12:14:01.253Z",
+    "requestId": "d05273d3-3cd4-440f-86ff-ba9e60328bb4",
+    "userId": "user_1774959056846_xsnegs4obzl",
+    "eventType": "CACHE_HIT",
+    "idempotencyKey": "test2-key-1",
+    "requestHash": "35dfeda66d126dccdb67ec7e1c539218fd6af4d420de9d39d3c3caf6c01b5224",
+    "outcome": "cached",
+    "details": {
+      "message": "Returning cached response"
+    }
+  },
+  {
+    "id": "audit_1774959352746_8092556e",
+    "timestamp": "2026-03-31T12:15:52.746Z",
+    "requestId": "79ee1b67-3d13-423c-98ec-1edd4b7aa9ea",
+    "userId": "user_1774959056846_xsnegs4obzl",
+    "eventType": "IDEMPOTENCY_CHECK",
+    "idempotencyKey": "test2-key-2",
+    "requestHash": "35dfeda66d126dccdb67ec7e1c539218fd6af4d420de9d39d3c3caf6c01b5224",
+    "outcome": "success",
+    "details": {
+      "action": "starting_idempotency_check"
+    }
+  },
+  {
+    "id": "audit_1774959352757_21c51d94",
+    "timestamp": "2026-03-31T12:15:52.757Z",
+    "requestId": "79ee1b67-3d13-423c-98ec-1edd4b7aa9ea",
+    "userId": "user_1774959056846_xsnegs4obzl",
+    "eventType": "PAYMENT_PROCESSING_STARTED",
+    "idempotencyKey": "test2-key-2",
+    "requestHash": "35dfeda66d126dccdb67ec7e1c539218fd6af4d420de9d39d3c3caf6c01b5224",
+    "outcome": "success",
+    "details": {
+      "amount": 500,
+      "currency": "GHS"
+    }
+  },
+  {
+    "id": "audit_1774959362805_87f97021",
+    "timestamp": "2026-03-31T12:16:02.806Z",
+    "requestId": "79ee1b67-3d13-423c-98ec-1edd4b7aa9ea",
+    "userId": "user_1774959056846_xsnegs4obzl",
+    "eventType": "PAYMENT_SUCCESS",
+    "idempotencyKey": "test2-key-2",
+    "requestHash": "35dfeda66d126dccdb67ec7e1c539218fd6af4d420de9d39d3c3caf6c01b5224",
+    "outcome": "success",
+    "details": {
+      "amount": 500,
+      "currency": "GHS",
+      "transactionId": "txn_133074e4bc1409dcc",
+      "processingTimeMs": 2000
+    }
+  },
+  {
+    "id": "audit_1774959467709_c40f4677",
+    "timestamp": "2026-03-31T12:17:47.709Z",
+    "requestId": "8f8b0700-0d0c-4461-8d5f-3e5447ddd77d",
+    "userId": "user_1774959056846_xsnegs4obzl",
+    "eventType": "IDEMPOTENCY_CHECK",
+    "idempotencyKey": "test2-key-2",
+    "requestHash": "35dfeda66d126dccdb67ec7e1c539218fd6af4d420de9d39d3c3caf6c01b5224",
+    "outcome": "success",
+    "details": {
+      "action": "starting_idempotency_check"
+    }
+  },
+  {
+    "id": "audit_1774959467727_419500d2",
+    "timestamp": "2026-03-31T12:17:47.727Z",
+    "requestId": "8f8b0700-0d0c-4461-8d5f-3e5447ddd77d",
+    "userId": "user_1774959056846_xsnegs4obzl",
+    "eventType": "CACHE_HIT",
+    "idempotencyKey": "test2-key-2",
+    "requestHash": "35dfeda66d126dccdb67ec7e1c539218fd6af4d420de9d39d3c3caf6c01b5224",
+    "outcome": "cached",
+    "details": {
+      "message": "Returning cached response"
+    }
+  },
+  {
+    "id": "audit_1774959472656_46ac8dec",
+    "timestamp": "2026-03-31T12:17:52.656Z",
+    "requestId": "11a61d4d-2575-4dff-8228-5447945d412c",
+    "userId": "user_1774959056846_xsnegs4obzl",
+    "eventType": "IDEMPOTENCY_CHECK",
+    "idempotencyKey": "test2-key-3",
+    "requestHash": "35dfeda66d126dccdb67ec7e1c539218fd6af4d420de9d39d3c3caf6c01b5224",
+    "outcome": "success",
+    "details": {
+      "action": "starting_idempotency_check"
+    }
+  },
+  {
+    "id": "audit_1774959472663_efcea083",
+    "timestamp": "2026-03-31T12:17:52.663Z",
+    "requestId": "11a61d4d-2575-4dff-8228-5447945d412c",
+    "userId": "user_1774959056846_xsnegs4obzl",
+    "eventType": "PAYMENT_PROCESSING_STARTED",
+    "idempotencyKey": "test2-key-3",
+    "requestHash": "35dfeda66d126dccdb67ec7e1c539218fd6af4d420de9d39d3c3caf6c01b5224",
+    "outcome": "success",
+    "details": {
+      "amount": 500,
+      "currency": "GHS"
+    }
+  },
+  {
+    "id": "audit_1774959474710_60185c23",
+    "timestamp": "2026-03-31T12:17:54.710Z",
+    "requestId": "11a61d4d-2575-4dff-8228-5447945d412c",
+    "userId": "user_1774959056846_xsnegs4obzl",
+    "eventType": "PAYMENT_SUCCESS",
+    "idempotencyKey": "test2-key-3",
+    "requestHash": "35dfeda66d126dccdb67ec7e1c539218fd6af4d420de9d39d3c3caf6c01b5224",
+    "outcome": "success",
+    "details": {
+      "amount": 500,
+      "currency": "GHS",
+      "transactionId": "txn_18af8d46fb1d3a369",
+      "processingTimeMs": 2000
+    }
+  }
+]

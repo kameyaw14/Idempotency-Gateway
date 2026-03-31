@@ -5,5 +5,12 @@
     "email": "finsafe@example.com",
     "password": "$2b$12$ypGYRLwDF3eepfmVf9gS5OpENvqh.oiLkglStjJjzabZmnoQww.U.",
     "createdAt": "2026-03-26T20:49:38.068Z"
+  },
+  {
+    "id": "user_1774959056846_xsnegs4obzl",
+    "name": "finsafe2",
+    "email": "finsafe2@example.com",
+    "password": "$2b$12$XuINjgGyPVsh6feEb59xKeVUs35mZjQ/8PNFpsjRHFTk18/crxkt.",
+    "createdAt": "2026-03-31T12:10:56.846Z"
   }
 ]

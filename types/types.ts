@@ -81,3 +81,22 @@ export interface IdempotencyRecord {
   originalBody: any;
   timestamp: Date;
 }
+
+export interface AuditLogEntry {
+  id: string;
+  timestamp: string;
+  requestId: string;
+  userId: string | null;
+  eventType:
+    | "PAYMENT_PROCESSING_STARTED"
+    | "CACHE_HIT"
+    | "CONFLICT_REJECTED"
+    | "IN_FLIGHT_WAIT"
+    | "PAYMENT_SUCCESS"
+    | "PAYMENT_ERROR"
+    | "IDEMPOTENCY_CHECK";
+  idempotencyKey?: string;
+  requestHash?: string;
+  outcome: "success" | "cached" | "conflict" | "in_flight" | "error";
+  details?: Record<string, any>;
+}
